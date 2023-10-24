@@ -1,4 +1,6 @@
-#include "stdhaed.h"
+#include "simulation.h"
+#include "TrajGenFivth.h"
+
 void compute_offset()
 {
     TrajGenFivth trg;

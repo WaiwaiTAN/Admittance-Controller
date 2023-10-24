@@ -153,7 +153,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RobotKinematics.cpp" />
     <ClCompile Include="simulation.cpp" />
-    <ClCompile Include="stdhaed.h" />
     <ClCompile Include="trajgen.h" />
     <ClCompile Include="TrajGenFivth.cpp" />
   </ItemGroup>
