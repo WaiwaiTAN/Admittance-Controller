@@ -371,3 +371,10 @@ FodyWeavers.xsd
 
 #cmake build
 build
+
+#
+*.cd
+
+#
+*.vcxproj*
+*.sln
