@@ -1,7 +1,7 @@
 #include "TrajGenFivth.h"
 #include <iostream>
 
-TrajGenFivth::TrajGenFivth() : TrajGen_base()
+TrajGenFivth::TrajGenFivth() : TrajGen_base(), kal(6, 6, 6)
 {
     fs = freopen("freopen.out", "w", stderr);
     h = com_config();
@@ -11,19 +11,17 @@ TrajGenFivth::TrajGenFivth() : TrajGen_base()
         fe[i] = -1;
     }
     com_reset(h);
-    fe_offset[0] = -0.3208;
-    fe_offset[1] = -0.3082;
-    fe_offset[2] = -0.3913;
-    fe_offset[3] = -0.0135;
-    fe_offset[4] = -0.0099;
-    fe_offset[5] = -0.0091;
 
-    threholds[0] = 0.1433;
-    threholds[1] = 0.1590;
-    threholds[2] = 0.1529;
-    threholds[3] = 0.3858e-2;
-    threholds[4] = 0.4158e-2;
-    threholds[5] = 0.3538e-2;
+    kal.setModel(Eigen::MatrixXd::Identity(6, 6), Eigen::MatrixXd::Zero(6, 6), Eigen::MatrixXd::Identity(6, 6));
+    Eigen::MatrixXd R = Eigen::MatrixXd::Identity(6, 6);
+    R(0, 0) = 0.15;
+    R(1, 1) = 0.15;
+    R(2, 2) = 0.15;
+    R(3, 3) = 0.04;
+    R(4, 4) = 0.04;
+    R(5, 5) = 0.04;
+    kal.setCov(Eigen::MatrixXd::Identity(6, 6), R);
+    kal.setInitEstimate(Eigen::MatrixXd::Zero(6, 1), Eigen::MatrixXd::Identity(6, 6));
 }
 
 TrajGenFivth::~TrajGenFivth()
@@ -128,33 +126,12 @@ Eigen::MatrixXd TrajGenFivth::GetFr(double t)
     if (com_rw(fe, h))
     {
         for (int i = 0; i < 6; i++)
-        {
-            fe_mat(i) = fe[i] - fe_offset[i];
-            if (abs(fe_mat(i)) < threholds[i])
-            {
-                fe_mat(i) = 0;
-            }
-        }
+            fe_mat(i) = fe[i];
+        fe_mat = kal.get_opt_state(Eigen::MatrixXd::Zero(6, 1), fe_mat);
     }
 #ifdef debug_enabled
     std::cerr << fe_mat.transpose() << std::endl;
 #endif //  debug_enabled
 
     return fe_mat;
-}
-
-void TrajGenFivth::SetThrehold(double thre[])
-{
-    for (int i = 0; i < 6; i++)
-    {
-        threholds[i] = thre[i];
-    }
-}
-
-void TrajGenFivth::SetOffset(double off[])
-{
-    for (int i = 0; i < 6; i++)
-    {
-        fe_offset[i] = off[i];
-    }
 }
