@@ -368,3 +368,6 @@ FodyWeavers.xsd
 # debug
 *.txt
 *.out
+
+#cmake build
+build
