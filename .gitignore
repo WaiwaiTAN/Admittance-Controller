@@ -378,3 +378,4 @@ build
 #
 *.vcxproj*
 *.sln
+*.props
