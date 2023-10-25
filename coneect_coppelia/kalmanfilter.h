@@ -22,10 +22,18 @@ private:
     *   y(k) = Hx(k)
     */
     Eigen::MatrixXd A, B, H;
-    Eigen::MatrixXd measure_cov;
+    Eigen::MatrixXd estimated_x, estimated_cov;
+
+    int x_dim, u_dim, z_dim;
+    Eigen::MatrixXd Q, R, K;
 public:
-    kalman(/* args */);
+    kalman(int dimx, int dimu, int dimz);
     ~kalman();
+
+    bool setModel(const Eigen::MatrixXd &a, const Eigen::MatrixXd &b, const Eigen::MatrixXd &h);
+    bool setCov(const Eigen::MatrixXd &q, const Eigen::MatrixXd &r);
+    bool setInitEstimate(const Eigen::MatrixXd &x, const Eigen::MatrixXd &cov);
+    Eigen::MatrixXd get_opt_state(const Eigen::MatrixXd &uk, const Eigen::MatrixXd &zk);
 };
 
 #endif
